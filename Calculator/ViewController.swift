@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
+    @IBOutlet weak var historyDisplay: UILabel!
     
     var userIsInTheMiddleOfTypingANumber: Bool = false;
     
@@ -26,11 +27,39 @@ class ViewController: UIViewController {
         
     }
 
+    @IBAction func appendDot(sender: UIButton) {
+        
+        if(display.text!.rangeOfString(sender.currentTitle!) == nil) {
+            display.text = display.text! + ".";
+        } else {
+            display.text = "0.";
+        }
+        userIsInTheMiddleOfTypingANumber = true;
+        
+    }
+    
+    @IBAction func clear(sender: AnyObject) {
+        operandStack.removeAll(keepCapacity: false);
+        display.text! = "0";
+        historyDisplay.text! = "";
+    }
+    
+    @IBAction func appendPI(sender: AnyObject) {
+        
+        if(userIsInTheMiddleOfTypingANumber) {
+            enter();
+        }
+        display.text = "\(M_PI)";
+        enter();
+
+    }
+    
     var operandStack = Array<Double>();
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false;
         operandStack.append(displayValue);
         println("operandStack = \(operandStack)");
+        historyDisplay.text! = "\(operandStack)";
     }
     
     var displayValue: Double {
@@ -55,6 +84,8 @@ class ViewController: UIViewController {
             case "+": performOperation {$0 + $1};
             case "−": performOperation {$1 - $0};
             case "√": performOperation {sqrt($0)};
+            case "sin": performOperation {sin($0)};
+            case "cos": performOperation {cos($0)};
             default: break;
         }
         
